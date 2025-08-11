@@ -1,0 +1,31 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon scp.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@distube/ytdl-core": "^4.16.12",
+    "axios": "^1.10.0",
+    "canvas": "^3.1.2",
+    "cheerio": "^1.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "form-data": "^4.0.3",
+    "jsdom": "^26.1.0",
+    "nodemon": "^3.1.10",
+    "puppeteer": "^24.11.0",
+    "sharp": "^0.34.2",
+    "telegraf": "^4.16.3",
+    "truecallerjs": "^2.2.0",
+    "valid-url": "^1.0.9",
+    "ytdl-core": "^4.11.5"
+  }
+}
