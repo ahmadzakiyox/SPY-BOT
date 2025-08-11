@@ -3,9 +3,9 @@ const axios = require('axios');
 require('dotenv').config();
 
 // --- Konfigurasi dari Environment Variables ---
-const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
-const RENDER_SERVER_URL = process.env.RENDER_SERVER_URL;
-const API_KEY = process.env.API_KEY;
+const TELEGRAM_TOKEN = '6136209053:AAF01MfDjE9oIajSHIDBDTpJ70CUuTqQLpY';
+const RENDER_SERVER_URL = 'https://svb.onrender.com';
+const API_KEY = 'KucingTerbangWarnaWarni123!';
 
 if (!TELEGRAM_TOKEN || !RENDER_SERVER_URL || !API_KEY) {
     console.error("FATAL ERROR: Pastikan TELEGRAM_TOKEN, RENDER_SERVER_URL, dan API_KEY sudah diatur!");
